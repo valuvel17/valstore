@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 export default function ImageBanner() {
@@ -18,11 +19,9 @@ export default function ImageBanner() {
         src="med_res/banner.png"
         alt="banner-high-res"
         style={{ opacity: IsLoaded ? 1 : 0 }}
-        onLoad={() => {
-          //when the high resolution image is completely loaded, this callback will be executed and the intention is to get it to take this initially invisible image and make visible
-          setIsLoaded(true);
-        }}
+        onLoad={() => setIsLoaded(true)}
       />
+
       <div className="cta-btns-container">
         <div>
           <div>
@@ -30,8 +29,12 @@ export default function ImageBanner() {
             <h1>The Valstore</h1>
           </div>
           <div>
-            <button>Shop stickers</button>
-            <button>Shop planner</button>
+            <Link href="#stickers-section">
+              <button>Shop stickers</button>
+            </Link>
+            <Link href="#planner-section">
+              <button>Shop planner</button>
+            </Link>
           </div>
         </div>
       </div>
