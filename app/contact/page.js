@@ -30,7 +30,7 @@ export default function Contact() {
       <h5>Feel free to reach out! 💌</h5>
 
       {submitted ? (
-        <><p>Thanks! I'll get back to you soon.</p><Link href={'/'}>
+        <><p>Thanks! I&apos;ll get back to you soon.</p><Link href={'/'}>
           <button>Home</button>
         </Link></>
       ) : (
