@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useProducts } from "@/context/ProductContext";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CartPage() {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function CartPage() {
 
           return (
             <div key={itemIndex} className="cart-item">
-              <img src={imgUrl} alt={imgName + "-img"} />
+              <Image src={imgUrl} alt={imgName + "-img"} />
               <div className="cart-item-info">
                 <h3>{itemData.name}</h3>
                 <p>
