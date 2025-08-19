@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
             <div className="links-container">
               <div>
                 <h3>Valuvel</h3>
-                <Link href={"/"}>GitHub</Link>
+                <Link href={"https://github.com/valuvel17"}>GitHub</Link>
               </div>
               <div>
                 <h3>Store</h3>
@@ -68,7 +68,7 @@ export default function RootLayout({ children }) {
                 Built with NextJs
               </p>
               <div className="social-links">
-                <Link href={"/"} target="_blank">
+                <Link href={"https://github.com/valuvel17/valstore"} target="_blank">
                   <i className="fa-brands fa-github"></i>
                 </Link>
                 <Link
