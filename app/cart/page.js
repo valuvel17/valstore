@@ -47,8 +47,6 @@ export default function CartPage() {
         <p>Your cart is empty. Start shopping!</p>
       )}
 
-
-
       <div className="cart-container">
         {Object.keys(cart).map((item, itemIndex) => {
           const itemData = cart[item];
@@ -63,7 +61,21 @@ export default function CartPage() {
 
           return (
             <div key={itemIndex} className="cart-item">
-              <Image src={imgUrl} alt={imgName + "-img"} />
+              <div
+                style={{
+                  position: "relative",
+                  width: "250px",
+                  height: "250px",
+                }}
+              >
+                <Image
+                  src={`/${imgUrl}`}
+                  alt={`${imgName}-img`}
+                  fill
+                  style={{ objectFit: "cover", borderRadius: "8px" }}
+                />
+              </div>
+
               <div className="cart-item-info">
                 <h3>{itemData.name}</h3>
                 <p>
@@ -84,7 +96,12 @@ export default function CartPage() {
                     value={itemQuantity}
                     onChange={(e) => {
                       const newValue = e.target.value;
-                      handleIncrementProduct(itemData.default_price, newValue, itemData, true);
+                      handleIncrementProduct(
+                        itemData.default_price,
+                        newValue,
+                        itemData,
+                        true
+                      );
                     }}
                   />
                 </div>
@@ -98,9 +115,7 @@ export default function CartPage() {
       </div>
       <div className="checkout-container">
         <Link href="/">
-          <button>
-            &larr; Continue shopping
-          </button>
+          <button>&larr; Continue shopping</button>
         </Link>
         <button onClick={createCheckout}>Checkout &rarr;</button>
       </div>
