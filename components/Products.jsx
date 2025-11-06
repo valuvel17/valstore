@@ -24,7 +24,7 @@ export default function Products(props) {
         >
           <div className="portal-content">
             <img
-              src={`med_res/${portalImage}.jpeg`}
+              src={`/med_res/${portalImage}.jpeg`}
               alt={`${portalImage}`}
               className="img-display"
             />
@@ -46,7 +46,7 @@ export default function Products(props) {
               }}
               className="img-button"
             >
-              <img src="low_res/planner.jpeg" alt="high-res-planner" />
+              <img src="/low_res/planner.jpeg" alt="high-res-planner" />
             </button>
           </div>
           <div className="planner-info">
@@ -113,7 +113,7 @@ export default function Products(props) {
                   className="img-button"
                 >
                   <img
-                    src={`low_res/${stickerImgUrl}.jpeg`}
+                    src={`/low_res/${stickerImgUrl}.jpeg`}
                     alt={`${stickerImgUrl}-low-res`}
                   />
                 </button>
