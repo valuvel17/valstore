@@ -3,18 +3,34 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🔍 Environment check"
-        - if [ -n "$STRIPE_SECRET_KEY" ]; then echo "STRIPE_SECRET_KEY is set"; else echo "STRIPE_SECRET_KEY is MISSING"; fi
-        - if [ -n "$NEXT_PUBLIC_BASE_URL" ]; then echo "NEXT_PUBLIC_BASE_URL is set ($NEXT_PUBLIC_BASE_URL)"; else echo "NEXT_PUBLIC_BASE_URL is MISSING"; fi
-        - if [ -n "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" ]; then echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set"; else echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is MISSING"; fi
+        - echo 'Environment check'
+        - |
+          if [ -n "$STRIPE_SECRET_KEY" ]; then
+            echo "STRIPE_SECRET_KEY is set"
+          else
+            echo "STRIPE_SECRET_KEY is MISSING"
+          fi
+        - |
+          if [ -n "$NEXT_PUBLIC_BASE_URL" ]; then
+            echo "NEXT_PUBLIC_BASE_URL is set: $NEXT_PUBLIC_BASE_URL"
+          else
+            echo "NEXT_PUBLIC_BASE_URL is MISSING"
+          fi
+        - |
+          if [ -n "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" ]; then
+            echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set"
+          else
+            echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is MISSING"
+          fi
+        - echo 'Installing dependencies...'
         - npm ci
     build:
       commands:
-        - echo "🏗️ Starting Next.js build..."
+        - echo 'Starting Next.js build...'
         - npm run build
     postBuild:
       commands:
-        - echo "Deployment build completed successfully!"
+        - echo 'Deployment build completed successfully!'
   artifacts:
     baseDirectory: .next
     files:
