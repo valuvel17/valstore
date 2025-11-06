@@ -69,7 +69,7 @@ export default function CartPage() {
                 }}
               >
                 <Image
-                  src={`/${imgUrl}`}
+                  src={`${imgUrl}`}
                   alt={`${imgName}-img`}
                   fill
                   style={{ objectFit: "cover", borderRadius: "8px" }}
