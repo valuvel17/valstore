@@ -57,7 +57,7 @@ export default function CartPage() {
               : itemData.name
                   .replaceAll(" Sticker.png", "")
                   .replaceAll(" ", "_");
-          const imgUrl = "low_res/" + imgName + ".jpeg";
+          const imgUrl = "/low_res/" + imgName + ".jpeg";
 
           return (
             <div key={itemIndex} className="cart-item">
