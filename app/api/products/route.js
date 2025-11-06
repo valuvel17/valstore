@@ -1,5 +1,8 @@
 import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
 export async function GET() {
   try {
@@ -11,6 +14,7 @@ export async function GET() {
       prices: prices.data.filter(price => price.product === p.id),
     }));
 
+    console.log(`Products fetched: ${combined.length}`);
     return Response.json(combined);
   } catch (err) {
     console.error("Stripe fetch failed:", err.message);

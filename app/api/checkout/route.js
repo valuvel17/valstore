@@ -9,11 +9,14 @@ export async function POST(request) {
     const { lineItems } = await request.json();
     console.log("lineItems:", lineItems);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (!baseUrl) console.error("Missing NEXT_PUBLIC_BASE_URL!");
+
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.BASE_URL}/success`,
-      cancel_url: `${process.env.BASE_URL}/`,
+      success_url: `${baseUrl}/success`,
+      cancel_url: `${baseUrl}/`,
     });
 
     console.log("Stripe session created:", session.id);
