@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Portal from "./Portal";
 import { useProducts } from "@/context/ProductContext";
 
@@ -8,10 +8,32 @@ export default function Products({ planner, stickers }) {
   const [portalImage, setPortalImage] = useState(null);
   const { handleIncrementProduct } = useProducts();
 
-  if (!stickers?.length || !planner) return null;
+  // 🧠 Debug logs (solo se ejecutan en el cliente)
+  useEffect(() => {
+    console.log("📦 Products component mounted");
+    console.log("🧩 Planner:", planner);
+    console.log("🧩 Stickers:", stickers?.length || 0);
+
+    if (!planner) {
+      console.warn("⚠️ Planner is missing — the section won't render");
+    }
+    if (!stickers?.length) {
+      console.warn("⚠️ Stickers array is empty — check getProducts() or API");
+    }
+  }, [planner, stickers]);
+
+  if (!stickers?.length || !planner) {
+    console.error("❌ Products component skipped render: missing data");
+    return (
+      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+        <p>⚠️ Products could not be loaded. Check your API or environment.</p>
+      </div>
+    );
+  }
 
   return (
     <>
+      {/* 🪞 Fullscreen image modal */}
       {portalImage && (
         <Portal handleClosePortal={() => setPortalImage(null)}>
           <div className="portal-content">
@@ -24,7 +46,7 @@ export default function Products({ planner, stickers }) {
         </Portal>
       )}
 
-      {/* Planner section */}
+      {/* 🪙 Planner section */}
       <div id="planner-section" className="section-container">
         <div className="section-header">
           <h2>Shop Our Selection</h2>
@@ -52,8 +74,8 @@ export default function Products({ planner, stickers }) {
               Step into a realm of fantasy and organization with our{" "}
               <strong>Medieval Dragon Month Planner</strong>! This
               high-resolution PNG asset combines the fierce elegance of dragons
-              with intricate medieval designs to create a planner that's not
-              only functional but also a work of art.
+              with intricate medieval designs to create a planner that's both
+              functional and a work of art.
             </p>
             <div className="purchase-btns">
               <button
@@ -68,7 +90,7 @@ export default function Products({ planner, stickers }) {
         </div>
       </div>
 
-      {/* Stickers section */}
+      {/* 💾 Stickers section */}
       <div id="stickers-section" className="section-container">
         <div className="section-header">
           <h2>Or Collect Your Favourite Tech</h2>
@@ -77,6 +99,7 @@ export default function Products({ planner, stickers }) {
 
         <div className="sticker-container">
           {stickers.map((sticker, i) => {
+            // 🧩 Limpieza del nombre para coincidir con el archivo
             const imgName = sticker.name
               ?.replace(/ Sticker.*$/i, "")
               .replace(/\s+/g, "_")
@@ -87,16 +110,28 @@ export default function Products({ planner, stickers }) {
               ? sticker.prices[0].unit_amount / 100
               : "—";
 
+            // 🔍 Debug log individual por sticker
+            console.log(
+              `🧷 Sticker #${i + 1}:`,
+              sticker.name,
+              "→",
+              `/low_res/${imgName}.jpeg`
+            );
+
             return (
               <div key={i} className="sticker-card">
                 <button
                   onClick={() => setPortalImage(imgName)}
                   className="img-button"
                 >
-                  {console.log("🧩 Trying to load:", `/low_res/${imgName}.jpeg`)}
                   <img
                     src={`/low_res/${imgName}.jpeg`}
                     alt={`${imgName}-low-res`}
+                    onError={() =>
+                      console.error(
+                        `🚫 Image not found: /low_res/${imgName}.jpeg`
+                      )
+                    }
                   />
                 </button>
 

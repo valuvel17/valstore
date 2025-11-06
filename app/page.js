@@ -6,14 +6,23 @@ import Products from "@/components/Products";
 export async function getProducts() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    console.log("🌍 BASE_URL:", baseUrl); // 👈 log para AWS
+
+    if (!baseUrl) {
+      console.error("❌ NEXT_PUBLIC_BASE_URL is missing!");
+      return [];
+    }
 
     const response = await fetch(`${baseUrl}/api/products`, {
       cache: "no-store",
     });
 
-    if (!response.ok) throw new Error("Failed to fetch products");
+    if (!response.ok)
+      throw new Error(`Failed to fetch products: ${response.status}`);
 
-    return await response.json();
+    const data = await response.json();
+    console.log("✅ Products fetched:", data.length);
+    return data;
   } catch (error) {
     console.error("Server getProducts failed:", error.message);
     return [];
