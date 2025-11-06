@@ -8,7 +8,17 @@ export default function Products({ planner, stickers }) {
   const [portalImage, setPortalImage] = useState(null);
   const { handleIncrementProduct } = useProducts();
 
-  if (!stickers?.length || !planner) return null;
+  if (!stickers?.length || !planner) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center", color: "tomato" }}>
+        <h3>⚠️ No se pudieron cargar los productos.</h3>
+        <p>
+          Esto puede deberse a un error al conectarse con la API de Stripe o a
+          una URL incorrecta.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -33,7 +43,10 @@ export default function Products({ planner, stickers }) {
 
         <div className="planner-container">
           <div>
-            <button onClick={() => setPortalImage("planner")} className="img-button">
+            <button
+              onClick={() => setPortalImage("planner")}
+              className="img-button"
+            >
               <img src="/low_res/planner.jpeg" alt="high-res-planner" />
             </button>
           </div>
@@ -95,19 +108,18 @@ export default function Products({ planner, stickers }) {
                 </button>
 
                 <div className="sticker-info">
-                  <p className="text-medium">{sticker.name || "Unnamed product"}</p>
+                  <p className="text-medium">
+                    {sticker.name || "Unnamed product"}
+                  </p>
                   <p>{sticker.description || "No description available."}</p>
                   <h4>
-                    <span>$</span>{price}
+                    <span>$</span>
+                    {price}
                   </h4>
                   <button
                     disabled={price === "—"}
                     onClick={() =>
-                      handleIncrementProduct(
-                        sticker.default_price,
-                        1,
-                        sticker
-                      )
+                      handleIncrementProduct(sticker.default_price, 1, sticker)
                     }
                   >
                     Add to Cart

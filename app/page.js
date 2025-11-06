@@ -3,34 +3,24 @@ import Products from "@/components/Products";
 
 export async function getProducts() {
   try {
-    // 🔍 Detectamos si es local o AWS
     const isDev = process.env.NODE_ENV === "development";
-
-    // ✅ En local usamos localhost, en Amplify usamos dominio del deploy
     const baseUrl = isDev
       ? "http://localhost:3000"
       : process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL;
 
-    // 🔍 Logs visibles en AWS Amplify
-    console.log("🧠 NODE_ENV:", process.env.NODE_ENV);
-    console.log("🌍 NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+    console.log("🌍 NODE_ENV:", process.env.NODE_ENV);
     console.log("🌍 BASE_URL:", process.env.BASE_URL);
-    console.log("🧩 Final fetch URL:", `${baseUrl}/api/products`);
+    console.log("🌍 NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+    console.log("🧩 Fetch URL:", `${baseUrl}/api/products`);
 
-    const response = await fetch(`${baseUrl}/api/products`, {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("❌ Fetch failed:", response.status, response.statusText);
-      throw new Error("Failed to fetch products");
-    }
+    const response = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const data = await response.json();
     console.log("✅ Products fetched:", data.length);
     return data;
   } catch (error) {
-    console.error("🚨 Server getProducts failed:", error.message);
+    console.error("🚨 getProducts failed:", error.message);
     return [];
   }
 }
@@ -41,13 +31,10 @@ export default async function Home() {
   let planner = null;
   let stickers = [];
 
-  for (const product of products) {
-    if (product.name === "Medieval Dragon Month Planner") planner = product;
-    else stickers.push(product);
+  for (const p of products) {
+    if (p.name === "Medieval Dragon Month Planner") planner = p;
+    else stickers.push(p);
   }
-
-  console.log("🧾 Planner:", planner ? "Found ✅" : "Missing ❌");
-  console.log("🎨 Stickers count:", stickers.length);
 
   return (
     <>
@@ -55,6 +42,17 @@ export default async function Home() {
       <section>
         <Products planner={planner} stickers={stickers} />
       </section>
+
+      {/* Debug Info visible en AWS */}
+      <div style={{ background: "#111", color: "#0f0", padding: "1rem", fontSize: "0.9rem" }}>
+        <p><strong>🧪 DEBUG INFO</strong></p>
+        <p>NODE_ENV: {process.env.NODE_ENV}</p>
+        <p>BASE_URL: {process.env.BASE_URL || "❌ undefined"}</p>
+        <p>NEXT_PUBLIC_BASE_URL: {process.env.NEXT_PUBLIC_BASE_URL || "❌ undefined"}</p>
+        <p>Products fetched: {products.length}</p>
+        <p>Planner found: {planner ? "✅" : "❌"}</p>
+        <p>Stickers count: {stickers.length}</p>
+      </div>
     </>
   );
 }
