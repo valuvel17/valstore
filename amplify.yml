@@ -1,0 +1,20 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Environment check"
+        - echo "STRIPE_SECRET_KEY is set? $( [ -n \"$STRIPE_SECRET_KEY\" ] && echo YES || echo NO )"
+        - echo "NEXT_PUBLIC_BASE_URL: $NEXT_PUBLIC_BASE_URL"
+        - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set? $( [ -n \"$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\" ] && echo YES || echo NO )"
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*

@@ -9,6 +9,10 @@ export async function getProducts() {
     if (!baseUrl) console.error("Missing NEXT_PUBLIC_BASE_URL!");
 
     console.log("BASE_URL used:", baseUrl);
+    console.log("🧠 ENV at runtime:", {
+      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+      STRIPE_SECRET_KEY: !!process.env.STRIPE_SECRET_KEY,
+    });
 
     const response = await fetch(`${baseUrl}/api/products`, {
       cache: "no-store",
