@@ -1,23 +1,44 @@
-import Stripe from "stripe";
+import Stripe from "stripe"
+import '../../../envConfig.js'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
+const API_KEY = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY
+const stripe = new Stripe(API_KEY, {
+    apiVersion: '2023-10-16'
+})
 
 export async function GET() {
-  try {
-    const products = await stripe.products.list({ active: true });
-    const prices = await stripe.prices.list({ active: true });
+    try {
+        // fetch all the active products from stripe
+        const products = await stripe.products.list({ active: true })
 
-    const combined = products.data.map(p => ({
-      ...p,
-      prices: prices.data.filter(price => price.product === p.id),
-    }));
+        // fetch all the prices that are active
+        const prices = await stripe.prices.list({ active: true })
 
-    console.log(`Products fetched: ${combined.length}`);
-    return Response.json(combined);
-  } catch (err) {
-    console.error("Stripe fetch failed:", err.message);
-    return Response.json({ error: err.message }, { status: 500 });
-  }
+        // combine the products and their associated prices
+        const combinedData = products.data.map((product) => {
+            const productPrices = prices.data.filter((price) => {
+                return price.product === product.id
+            })
+
+            return {
+                ...product,
+                prices: productPrices.map((price) => {
+                    return {
+                        id: price.id,
+                        unit_amount: price.unit_amount,
+                        currency: price.currency,
+                        recurring: price.recurring
+                    }
+                })
+            }
+        })
+
+
+        // send the combined data as json
+        return Response.json(combinedData)
+
+    } catch (err) {
+        console.error('Error fetching data from stripe: ', err.message)
+        return Response.json({ error: 'Failed to fetch data from stripe' })
+    }
 }

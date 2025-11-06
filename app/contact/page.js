@@ -18,10 +18,9 @@ export default function Contact() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // 👈 esto evita que se recargue la página
+    e.preventDefault();
     console.log("Form submitted!", formData);
     setSubmitted(true);
-    // podés resetear o hacer un fetch a un backend acá
   };
 
   return (

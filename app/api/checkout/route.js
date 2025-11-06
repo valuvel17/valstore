@@ -1,28 +1,25 @@
-import Stripe from "stripe";
+import Stripe from "stripe"
+import '../../../envConfig.js'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
+const API_KEY = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY
+const stripe = new Stripe(API_KEY, {
+    apiVersion: '2023-10-16'
+})
 
 export async function POST(request) {
-  try {
-    const { lineItems } = await request.json();
-    console.log("lineItems:", lineItems);
+    try {
+        const { lineItems } = await request.json()
+        console.log(lineItems)
+        const session = await stripe.checkout.sessions.create({
+            mode: 'payment',
+            line_items: lineItems,
+            success_url: process.env.NEXT_PUBLIC_BASE_URL + '/success',
+            cancel_url: process.env.NEXT_PUBLIC_BASE_URL + '/'
+        })
+        return Response.json(session)
+    } catch (err) {
+        console.error('Error creating cart checkout ', err.message)
+        return Response.json({ error: 'Failed to create stripe checkout page' })
+    }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) console.error("Missing NEXT_PUBLIC_BASE_URL!");
-
-    const session = await stripe.checkout.sessions.create({
-      line_items: lineItems,
-      mode: "payment",
-      success_url: `${baseUrl}/success`,
-      cancel_url: `${baseUrl}/`,
-    });
-
-    console.log("Stripe session created:", session.id);
-    return Response.json({ url: session.url });
-  } catch (error) {
-    console.error("Error in checkout route:", error.message);
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
-  }
 }

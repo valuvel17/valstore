@@ -1,53 +1,62 @@
-export const dynamic = "force-dynamic";
-
 import ImageBanner from "@/components/ImageBanner";
 import Products from "@/components/Products";
 
+import Stripe from "stripe"
+import '../envConfig.js'
+
+const API_KEY = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY
+const stripe = new Stripe(API_KEY, {
+    apiVersion: "2023-10-16",
+})
+
+
 export async function getProducts() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    if (!baseUrl) console.error("Missing NEXT_PUBLIC_BASE_URL!");
+    const products = await stripe.products.list({ active: true })
 
-    console.log("BASE_URL used:", baseUrl);
-    console.log("🧠 ENV at runtime:", {
-      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-      STRIPE_SECRET_KEY: !!process.env.STRIPE_SECRET_KEY,
-    });
+    const prices = await stripe.prices.list({ active: true })
 
-    const response = await fetch(`${baseUrl}/api/products`, {
-      cache: "no-store",
-    });
+    const combinedData = products.data.map((product) => {
+        const productPrices = prices.data.filter((price) => {
+            return price.product === product.id
+        })
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("Products fetched:", data.length);
-    return data;
-  } catch (error) {
-    console.error("Server getProducts failed:", error.message);
-    return [];
-  }
+        return {
+            ...product,
+            prices: productPrices.map((price) => {
+                return {
+                    id: price.id,
+                    unit_amount: price.unit_amount,
+                    currency: price.currency,
+                    recurring: price.recurring
+                }
+            })
+        }
+    })
+    return combinedData
 }
 
-export default async function Home() {
-  const products = await getProducts();
+export default async function Home(props) {
+    const products = await getProducts()
 
-  let planner = null;
-  let stickers = [];
+    let planner = null
+    let stickers = []
 
-  for (const product of products) {
-    if (product.name === "Medieval Dragon Month Planner") planner = product;
-    else stickers.push(product);
-  }
 
-  return (
-    <>
-      <ImageBanner />
-      <section>
-        <Products planner={planner} stickers={stickers} />
-      </section>
-    </>
-  );
+    for (let product of products) {
+        if (product.name === 'Medieval Dragon Month Planner') {
+            planner = product
+            continue
+        }
+        stickers.push(product)
+    }
+
+
+    return (
+        < >
+            <ImageBanner />
+            <section>
+                <Products planner={planner} stickers={stickers} />
+            </section>
+        </>
+    );
 }
