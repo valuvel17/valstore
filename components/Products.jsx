@@ -1,163 +1,96 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Portal from "./Portal";
-import { useProducts } from "@/context/ProductContext";
+import { useState } from "react"
+import Portal from "./Portal"
+import { useProducts } from "@/context/ProductContext"
 
-export default function Products({ planner, stickers }) {
-  const [portalImage, setPortalImage] = useState(null);
-  const { handleIncrementProduct } = useProducts();
 
-  // 🧠 Debug logs (solo se ejecutan en el cliente)
-  useEffect(() => {
-    console.log("📦 Products component mounted");
-    console.log("🧩 Planner:", planner);
-    console.log("🧩 Stickers:", stickers?.length || 0);
+export default function Products(props) {
+    const { planner, stickers } = props
+    const [portalImage, setPortalImage] = useState(null)
 
-    if (!planner) {
-      console.warn("⚠️ Planner is missing — the section won't render");
-    }
-    if (!stickers?.length) {
-      console.warn("⚠️ Stickers array is empty — check getProducts() or API");
-    }
-  }, [planner, stickers]);
+    const { handleIncrementProduct, cart } = useProducts()
+    console.log(cart)
 
-  if (!stickers?.length || !planner) {
-    console.error("❌ Products component skipped render: missing data");
+    if (!stickers.length || !planner) { return null }
+
     return (
-      <div style={{ textAlign: "center", marginTop: "2rem" }}>
-        <p>⚠️ Products could not be loaded. Check your API or environment.</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {/* 🪞 Fullscreen image modal */}
-      {portalImage && (
-        <Portal handleClosePortal={() => setPortalImage(null)}>
-          <div className="portal-content">
-            <img
-              src={`/med_res/${portalImage}.jpeg`}
-              alt={portalImage}
-              className="img-display"
-            />
-          </div>
-        </Portal>
-      )}
-
-      {/* 🪙 Planner section */}
-      <div id="planner-section" className="section-container">
-        <div className="section-header">
-          <h2>Shop Our Selection</h2>
-          <p>From organisation or accessorization</p>
-        </div>
-
-        <div className="planner-container">
-          <div>
-            <button
-              onClick={() => setPortalImage("planner")}
-              className="img-button"
-            >
-              <img src="/low_res/planner.jpeg" alt="high-res-planner" />
-            </button>
-          </div>
-
-          <div className="planner-info">
-            <p className="text-large planner-header">
-              Medieval Dragon Month Planner
-            </p>
-            <h3>
-              <span>$</span>14.99
-            </h3>
-            <p>
-              Step into a realm of fantasy and organization with our{" "}
-              <strong>Medieval Dragon Month Planner</strong>! This
-              high-resolution PNG asset combines the fierce elegance of dragons
-              with intricate medieval designs to create a planner that's both
-              functional and a work of art.
-            </p>
-            <div className="purchase-btns">
-              <button
-                onClick={() =>
-                  handleIncrementProduct(planner.default_price, 1, planner)
-                }
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 💾 Stickers section */}
-      <div id="stickers-section" className="section-container">
-        <div className="section-header">
-          <h2>Or Collect Your Favourite Tech</h2>
-          <p>Choose from our custom designed tech logos</p>
-        </div>
-
-        <div className="sticker-container">
-          {stickers.map((sticker, i) => {
-            // 🧩 Limpieza del nombre para coincidir con el archivo
-            const imgName = sticker.name
-              ?.replace(/ Sticker.*$/i, "")
-              .replace(/\s+/g, "_")
-              .replace(/\.png$/i, "")
-              .replace(/\.jpeg$/i, "");
-
-            const price = sticker.prices?.[0]?.unit_amount
-              ? sticker.prices[0].unit_amount / 100
-              : "—";
-
-            // 🔍 Debug log individual por sticker
-            console.log(
-              `🧷 Sticker #${i + 1}:`,
-              sticker.name,
-              "→",
-              `/low_res/${imgName}.jpeg`
-            );
-
-            return (
-              <div key={i} className="sticker-card">
-                <button
-                  onClick={() => setPortalImage(imgName)}
-                  className="img-button"
-                >
-                  <img
-                    src={`/low_res/${imgName}.jpeg`}
-                    alt={`${imgName}-low-res`}
-                    onError={() =>
-                      console.error(
-                        `🚫 Image not found: /low_res/${imgName}.jpeg`
-                      )
-                    }
-                  />
-                </button>
-
-                <div className="sticker-info">
-                  <p className="text-medium">
-                    {sticker.name || "Unnamed product"}
-                  </p>
-                  <p>{sticker.description || "No description available."}</p>
-                  <h4>
-                    <span>$</span>
-                    {price}
-                  </h4>
-                  <button
-                    disabled={price === "—"}
-                    onClick={() =>
-                      handleIncrementProduct(sticker.default_price, 1, sticker)
-                    }
-                  >
-                    Add to Cart
-                  </button>
+        <>
+            {portalImage && (
+                <Portal handleClosePortal={() => { setPortalImage(null) }}>
+                    <div className="portal-content">
+                        <img className="img-display" src={`med_res/${portalImage}.jpeg`} alt={`${portalImage}-high-res`} />
+                    </div>
+                </Portal>
+            )}
+            <div className="section-container">
+                <div className="section-header">
+                    <h2>Shop Our Selection</h2>
+                    <p>From organisation or accessorization</p>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </>
-  );
+
+                <div className="planner-container">
+                    <div>
+                        <button onClick={() => {
+                            setPortalImage('planner')
+                        }} className="img-button">
+                            <img src="low_res/planner.jpeg" alt="high-res-planner" />
+                        </button>
+                    </div>
+                    <div className="planner-info">
+                        <p className="text-large planner-header">
+                            Medieval Dragon Month Planner
+                        </p>
+                        <h3><span>$</span>14.99</h3>
+                        <p>Step into a realm of fantasy and organization with our <strong>Medieval Dragon Month Planner</strong>! This high-resolution PNG asset combines the fierce elegance of dragons with intricate medieval designs to create a planner that's not only functional but also a work of art. Whether you&apos;re jotting down quests, planning battles, or just scheduling your weekly grocery run, this planner is your ultimate companion.</p>
+                        <ul>
+                            <li><strong>Epic Dragon Artwork:</strong> Stunning hand-drawn dragon motifs and medieval-inspired borders make every month feel legendary.
+                            </li>
+                            <li>
+                                <strong>Fully Printable:</strong> Designed at ultra-high resolution, it&apos;s perfect for printing on any size paper, from A4 to poster-sized displays.
+                            </li>
+                        </ul>
+                        <div className="purchase-btns">
+                            <button onClick={() => {
+                                const plannerPriceId = planner.default_price
+                                handleIncrementProduct(plannerPriceId, 1, planner)
+                            }}>Add to cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="section-container">
+                <div className="section-header">
+                    <h2>Or Collect Your Favorite Tech</h2>
+                    <p>Choose from our custom designed tech logos</p>
+                </div>
+                <div className="sticker-container">
+                    {stickers.map((sticker, stickerIndex) => {
+                        const stickerName = sticker.name
+                        const stickerImgUrl = sticker.name.replaceAll(' Sticker.png', '').replaceAll(' ', '_')
+                        return (
+                            <div key={stickerIndex} className="sticker-card">
+                                <button onClick={() => {
+                                    setPortalImage(stickerImgUrl)
+                                }} className="img-button">
+                                    <img src={`low_res/${stickerImgUrl}.jpeg`} alt={`${stickerImgUrl}-low-res`} />
+                                </button>
+                                <div className="sticker-info">
+                                    <p className="text-medium">{stickerName}</p>
+                                    <p>{sticker.description}</p>
+                                    <h4><span>$</span>{sticker.prices[0].unit_amount / 100}</h4>
+                                    <button onClick={() => {
+                                        const stickerPriceId = sticker.default_price
+                                        handleIncrementProduct(stickerPriceId, 1, sticker)
+                                    }}>Add to cart</button>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </>
+    )
 }
