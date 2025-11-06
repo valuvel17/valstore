@@ -2,12 +2,14 @@ import ImageBanner from "@/components/ImageBanner";
 import Products from "@/components/Products";
 
 export async function getProducts() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-  const response = await fetch(`${baseUrl}/api/products`, {
-    cache: "no-store",
-  });
-  const products = await response.json();
-  return products;
+  try {
+    const response = await fetch("/api/products", { cache: "no-store" });
+    if (!response.ok) throw new Error("Failed to fetch products");
+    return await response.json();
+  } catch (err) {
+    console.error("getProducts failed:", err.message);
+    return [];
+  }
 }
 
 export default async function Home() {
