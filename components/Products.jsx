@@ -33,7 +33,10 @@ export default function Products({ planner, stickers }) {
 
         <div className="planner-container">
           <div>
-            <button onClick={() => setPortalImage("planner")} className="img-button">
+            <button
+              onClick={() => setPortalImage("planner")}
+              className="img-button"
+            >
               <img src="/low_res/planner.jpeg" alt="high-res-planner" />
             </button>
           </div>
@@ -75,8 +78,10 @@ export default function Products({ planner, stickers }) {
         <div className="sticker-container">
           {stickers.map((sticker, i) => {
             const imgName = sticker.name
-              ?.replaceAll(" Sticker.png", "")
-              .replaceAll(" ", "_");
+              ?.replace(/ Sticker.*$/i, "")
+              .replace(/\s+/g, "_")
+              .replace(/\.png$/i, "")
+              .replace(/\.jpeg$/i, "");
 
             const price = sticker.prices?.[0]?.unit_amount
               ? sticker.prices[0].unit_amount / 100
@@ -88,6 +93,7 @@ export default function Products({ planner, stickers }) {
                   onClick={() => setPortalImage(imgName)}
                   className="img-button"
                 >
+                  {console.log("🧩 Trying to load:", `/low_res/${imgName}.jpeg`)}
                   <img
                     src={`/low_res/${imgName}.jpeg`}
                     alt={`${imgName}-low-res`}
@@ -95,19 +101,18 @@ export default function Products({ planner, stickers }) {
                 </button>
 
                 <div className="sticker-info">
-                  <p className="text-medium">{sticker.name || "Unnamed product"}</p>
+                  <p className="text-medium">
+                    {sticker.name || "Unnamed product"}
+                  </p>
                   <p>{sticker.description || "No description available."}</p>
                   <h4>
-                    <span>$</span>{price}
+                    <span>$</span>
+                    {price}
                   </h4>
                   <button
                     disabled={price === "—"}
                     onClick={() =>
-                      handleIncrementProduct(
-                        sticker.default_price,
-                        1,
-                        sticker
-                      )
+                      handleIncrementProduct(sticker.default_price, 1, sticker)
                     }
                   >
                     Add to Cart
