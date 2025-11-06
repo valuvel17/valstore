@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import "../../../envConfig.js";
 
-const API_KEY = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY;
+const API_KEY = process.env.STRIPE_SECRET_KEY;
 const stripe = new Stripe(API_KEY, { apiVersion: "2023-10-16" });
 
 export async function POST(request) {
@@ -19,7 +19,6 @@ export async function POST(request) {
     console.log("Stripe session created:", session);
 
     return Response.json({ url: session.url });
-
   } catch (error) {
     console.error("Error in checkout route:", error.message);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });

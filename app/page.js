@@ -2,7 +2,7 @@ import ImageBanner from "@/components/ImageBanner";
 import Products from "@/components/Products";
 
 export async function getProducts() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = process.env.BASE_URL;
   const response = await fetch(baseUrl + '/api/products');
   const products = await response.json();
   return products;
