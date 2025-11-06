@@ -3,14 +3,18 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Environment check"
-        - echo "STRIPE_SECRET_KEY is set? $( [ -n \"$STRIPE_SECRET_KEY\" ] && echo YES || echo NO )"
-        - echo "NEXT_PUBLIC_BASE_URL: $NEXT_PUBLIC_BASE_URL"
-        - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set? $( [ -n \"$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\" ] && echo YES || echo NO )"
+        - echo "🔍 Environment check"
+        - if [ -n "$STRIPE_SECRET_KEY" ]; then echo "STRIPE_SECRET_KEY is set"; else echo "STRIPE_SECRET_KEY is MISSING"; fi
+        - if [ -n "$NEXT_PUBLIC_BASE_URL" ]; then echo "NEXT_PUBLIC_BASE_URL is set ($NEXT_PUBLIC_BASE_URL)"; else echo "NEXT_PUBLIC_BASE_URL is MISSING"; fi
+        - if [ -n "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" ]; then echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is set"; else echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is MISSING"; fi
         - npm ci
     build:
       commands:
+        - echo "🏗️ Starting Next.js build..."
         - npm run build
+    postBuild:
+      commands:
+        - echo "Deployment build completed successfully!"
   artifacts:
     baseDirectory: .next
     files:
